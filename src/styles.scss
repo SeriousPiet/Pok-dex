@@ -1,1 +1,577 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  margin: 0;
+}
+
+@font-face {
+  font-family: "poppinsRegular";
+  font-display: swap;
+  font-style: normal;
+  font-weight: 200;
+  src: url("./app/fonts/Poppins-Regular.ttf");
+}
+
+.fontFamily {
+  font-family: "poppinsRegular";
+  color: white;
+}
+
+.normal {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(168, 167, 122));
+    box-shadow: 0px 0px 10px rgba(168, 167, 122, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(168, 167, 122, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.fire {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(238, 129, 48));
+    box-shadow: 0px 0px 10px rgba(238, 129, 48, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(238, 129, 48, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.water {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(99, 144, 240));
+    box-shadow: 0px 0px 10px rgba(99, 144, 240, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(99, 144, 240, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.electric {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(247, 208, 44));
+    box-shadow: 0px 0px 10px rgba(247, 208, 44, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(247, 208, 44, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.grass {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(122, 199, 76));
+    box-shadow: 0px 0px 10px rgba(122, 199, 76, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(122, 199, 76, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.flying {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(169, 143, 243));
+    box-shadow: 0px 0px 10px rgba(169, 143, 243, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(169, 143, 243, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.bug {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(168, 184, 32));
+    box-shadow: 0px 0px 10px rgba(168, 184, 32, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(168, 184, 32, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.poison {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(160, 64, 160));
+    box-shadow: 0px 0px 10px rgba(160, 64, 160, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(160, 64, 160, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.rock {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(182, 161, 54));
+    box-shadow: 0px 0px 10px rgba(182, 161, 54, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(182, 161, 54, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.ground {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(224, 192, 104));
+    box-shadow: 0px 0px 10px rgba(224, 192, 104, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(224, 192, 104, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.fighting {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(192, 48, 40));
+    box-shadow: 0px 0px 10px rgba(192, 48, 40, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(192, 48, 40, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.ice {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(152, 216, 216));
+    box-shadow: 0px 0px 10px rgba(152, 216, 216, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(152, 216, 216, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.psychic {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(249, 85, 135));
+    box-shadow: 0px 0px 10px rgba(249, 85, 135, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(249, 85, 135, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.ghost {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(123, 108, 204));
+    box-shadow: 0px 0px 10px rgba(123, 108, 204, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(123, 108, 204, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.dragon {
+  img {
+    filter: drop-shadow(4px 4px 5px rgb(112, 56, 248));
+    box-shadow: 0px 0px 10px rgba(112, 56, 248, 0.5);
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+  }
+  img:hover {
+    cursor: pointer;
+    background: rgba(112, 56, 248, 0.5);
+    transform: scale(1.1);
+  }
+}
+
+.normalD {
+  filter: drop-shadow(4px 4px 5px rgb(168, 167, 122));
+  box-shadow: 0px 0px 10px rgba(168, 167, 122, 0.5);
+  background-color: rgba(168, 167, 122, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+.fireD {
+  filter: drop-shadow(4px 4px 5px rgb(238, 129, 48));
+  box-shadow: 0px 0px 10px rgba(238, 129, 48, 0.5);
+  background-color: rgba(238, 129, 48, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+.waterD {
+  filter: drop-shadow(4px 4px 5px rgb(99, 144, 240));
+  box-shadow: 0px 0px 10px rgba(99, 144, 240, 0.5);
+  background-color: rgba(99, 144, 240, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+.electricD {
+  filter: drop-shadow(4px 4px 5px rgb(247, 208, 44));
+  box-shadow: 0px 0px 10px rgba(247, 208, 44, 0.5);
+  background-color: rgba(247, 208, 44, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+.grassD {
+  filter: drop-shadow(4px 4px 5px rgb(122, 199, 76));
+  box-shadow: 0px 0px 10px rgba(122, 199, 76, 0.5);
+  background-color: rgba(122, 199, 76, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+.flyingD {
+  filter: drop-shadow(4px 4px 5px rgb(169, 143, 243));
+  box-shadow: 0px 0px 10px rgba(169, 143, 243, 0.5);
+  background-color: rgba(169, 143, 243, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+.bugD {
+  filter: drop-shadow(4px 4px 5px rgb(168, 184, 32));
+  box-shadow: 0px 0px 10px rgba(168, 184, 32, 0.5);
+  background-color: rgba(168, 184, 32, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+.poisonD {
+  filter: drop-shadow(4px 4px 5px rgb(160, 64, 160));
+  box-shadow: 0px 0px 10px rgba(160, 64, 160, 0.5);
+  background-color: rgba(160, 64, 160, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+.rockD {
+  filter: drop-shadow(4px 4px 5px rgb(182, 161, 54));
+  box-shadow: 0px 0px 10px rgba(182, 161, 54, 0.5);
+  background-color: rgba(182, 161, 54, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+.groundD {
+  filter: drop-shadow(4px 4px 5px rgb(224, 192, 104));
+  box-shadow: 0px 0px 10px rgba(224, 192, 104, 0.5);
+  background-color: rgba(224, 192, 104, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+.fightingD {
+  filter: drop-shadow(4px 4px 5px rgb(192, 48, 40));
+  box-shadow: 0px 0px 10px rgba(192, 48, 40, 0.5);
+  background-color: rgba(192, 48, 40, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+.iceD {
+  filter: drop-shadow(4px 4px 5px rgb(152, 216, 216));
+  box-shadow: 0px 0px 10px rgba(152, 216, 216, 0.5);
+  background-color: rgba(152, 216, 216, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+.psychicD {
+  filter: drop-shadow(4px 4px 5px rgb(249, 85, 135));
+  box-shadow: 0px 0px 10px rgba(249, 85, 135, 0.5);
+  background-color: rgba(249, 85, 135, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+.ghostD {
+  filter: drop-shadow(4px 4px 5px rgb(123, 108, 204));
+  box-shadow: 0px 0px 10px rgba(123, 108, 204, 0.5);
+  background-color: rgba(123, 108, 204, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+.dragonD {
+  filter: drop-shadow(4px 4px 5px rgb(112, 56, 248));
+  box-shadow: 0px 0px 10px rgba(112, 56, 248, 0.5);
+  background-color: rgba(112, 56, 248, 0.3);
+  border-radius: 5px;
+  canvas {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  img {
+    height: auto;
+    width: 20vw;
+  }
+}
+
+#pokemonDetailsContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.pokemonDetails {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: 50%;
+  border-radius: 20px;
+  padding: 0;
+  canvas {
+    margin-top: 20px;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+  }
+}
+
+#mobileScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  opacity: 0.9;
+}
+
+.show {
+  display: flex !important;
+}
+
+@media screen and (max-width: 936px) {
+.normalD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+.fireD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+.waterD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+.electricD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+.grassD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+.flyingD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+.bugD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+.poisonD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+.rockD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+.groundD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+.fightingD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+.iceD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+.psychicD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+.ghostD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+.dragonD {
+  width: 100%;
+  img {
+    width: 40vw;
+  }
+}
+}
