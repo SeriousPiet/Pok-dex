@@ -10,57 +10,59 @@ import Chart from 'chart.js/auto';
   standalone: true,
   imports: [CommonModule, NavBarComponent, FooterComponent],
   styleUrls: ['./landing-page.component.scss'],
+
   template: ` <section>
     <app-nav-bar></app-nav-bar>
-    <div id="pokemonContainer"></div>
+    <div style="display: flex; width: 100%">
+      <div id="cardFilter"></div>
+      <div id="pokemonContainer"></div>
+    </div>
     <div id="pokemonDetailsContainer"></div>
     <div id="mobileScreen">
       <div>
         <img id="rotateDeviceImage" src="../assets/img/rotate_device.gif" />
       </div>
-      <div>Um den Pokedex nutzen zu können, bitte das Gerät drehen.</div>
+      <div>
+        <p style="color: white;">
+          Um den Pokedex nutzen zu können, bitte das Gerät drehen.
+        </p>
+      </div>
     </div>
     <app-footer></app-footer>
   </section>`,
 })
 export class LandingPageComponent implements OnInit {
-  constructor() {}
+  constructor() {
+    this.setFilter = this.setFilter.bind(this);
+  }
 
   async ngOnInit(): Promise<void> {
-    this.checkForBrowserSystem();
+    const isLandscape = window.matchMedia('(orientation: landscape)').matches;
+    this.checkForBrowserSystem(isLandscape);
+    this.renderPokemonTypeFilter();
     await this.getData();
   }
 
-  @HostListener('window:orientationchange', ['$event'])
-  onOrientationChange(event: any) {
-    this.checkForBrowserSystem();
+  @HostListener('window:orientationchange')
+  onOrientationChange() {
+    const isLandscape = window.matchMedia('(orientation: landscape)').matches;
+    this.checkForBrowserSystem(!isLandscape);
   }
 
-  checkForBrowserSystem() {
-    let isLandscape = window.matchMedia('(orientation: landscape)').matches;
-    const mobileScreenElement = document.getElementById('mobileScreen');
-
+  checkForBrowserSystem(isLandscape: any) {
+    const mobileScreen = document.getElementById('mobileScreen');
+    if (!mobileScreen) {
+      return;
+    }
     if (
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
         navigator.userAgent
       )
     ) {
-      if (mobileScreenElement) {
-        if (isLandscape) {
-          console.log(isLandscape);
-          console.log(mobileScreenElement.style.display);
-          mobileScreenElement.style.display = 'none';
-          console.log(mobileScreenElement.style.display);
-        } else {
-          console.log(isLandscape);
-          console.log(mobileScreenElement.style.display);
-          mobileScreenElement.style.display = 'flex';
-          console.log(mobileScreenElement.style.display);
-        }
-      }
-    } else {
-      if (mobileScreenElement) {
-        mobileScreenElement.style.display = 'none';
+      if (isLandscape) {
+        mobileScreen.classList.add('show');
+      } else {
+        mobileScreen.classList.remove('show');
       }
     }
   }
@@ -82,15 +84,145 @@ export class LandingPageComponent implements OnInit {
     }
   }
 
+  renderPokemonTypeFilter() {
+    const cardFilter = document.getElementById('cardFilter');
+    const typeArray = [
+      'All',
+      'all',
+      'Grass',
+      'grass',
+      'Fire',
+      'fire',
+      'Water',
+      'water',
+      'Bug',
+      'bug',
+      'Normal',
+      'normal',
+      'Poison',
+      'poison',
+      'Electric',
+      'electric',
+      'Ground',
+      'ground',
+      'Fairy',
+      'fairy',
+      'Fighting',
+      'fighting',
+      'Psychic',
+      'psychic',
+      'Rock',
+      'rock',
+      'Ghost',
+      'ghost',
+      'Ice',
+      'ice',
+      'Dragon',
+      'dragon',
+    ];
+    if (!cardFilter) {
+      return;
+    }
+    for (let i = 0; i < typeArray.length; i += 2) {
+      const type = typeArray[i];
+      const labelElement = document.createElement('label');
+      const inputElement = document.createElement('input');
+      inputElement.setAttribute('type', 'checkbox');
+      inputElement.setAttribute('value', typeArray[i + 1]);
+      if (type === 'All') {
+        inputElement.checked = true;
+      }
+      labelElement.appendChild(inputElement);
+      labelElement.appendChild(document.createTextNode(type));
+      cardFilter.appendChild(labelElement);
+    }
+    this.checkboxChangeControl();
+  }
+
+  checkboxChangeControl() {
+    const checkboxes = document.querySelectorAll<HTMLInputElement>(
+      '#cardFilter input[type="checkbox"]'
+    );
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener('change', (event: any) => {
+        if (event.target.value === 'all') {
+          checkboxes.forEach((cb) => {
+            if (cb !== event.target) {
+              cb.checked = false;
+            }
+          });
+        } else {
+          const allCheckbox = document.querySelector<HTMLInputElement>(
+            '#cardFilter input[value="all"]'
+          );
+          if (allCheckbox) {
+            allCheckbox.checked = false;
+          }
+        }
+        this.setFilter();
+      });
+    });
+  }
+
+  setFilter() {
+    const checkedCheckboxes = Array.from(
+      document.querySelectorAll<HTMLInputElement>(
+        '#cardFilter input[type="checkbox"]:checked'
+      )
+    );
+    const selectedType = checkedCheckboxes.map((checkbox) => checkbox.value);
+    if (checkedCheckboxes.length === 0 || selectedType[0] === 'all') {
+      const allCheckbox = document.querySelector<HTMLInputElement>('input[value="all"]');
+      if (allCheckbox) {
+          allCheckbox.checked = true;
+      }
+      this.loadCardFilter('all');
+    } else {
+      this.loadCardFilter(selectedType);
+    }
+  }
+
+  loadCardFilter(selectedTypes: string | string[]) {
+    const pokemonContainer = document.getElementById(
+      'pokemonContainer'
+    ) as HTMLDivElement;
+    if (!pokemonContainer) {
+      return;
+    }
+    const pokemonCards = pokemonContainer.getElementsByClassName('pokemonCard');
+    for (let i = 0; i < pokemonCards.length; i++) {
+      const pokemonCard = pokemonCards[i] as HTMLDivElement;
+      const pokemonType = pokemonCard.classList[0];
+      if (Array.isArray(selectedTypes)) {
+        if (
+          selectedTypes.includes('all') ||
+          selectedTypes.includes(pokemonType)
+        ) {
+          pokemonCard.style.display = 'flex';
+        } else {
+          pokemonCard.style.display = 'none';
+        }
+      } else {
+        if (selectedTypes === 'all' || selectedTypes === pokemonType) {
+          pokemonCard.style.display = 'flex';
+        } else {
+          pokemonCard.style.display = 'none';
+        }
+      }
+    }
+  }
+
   renderPokemonData(data: Pokedex.Pokemon) {
     const pokemonContainer = document.getElementById('pokemonContainer');
     const pokemonCard = this.createPokemonCard(data);
     const pokemonImage = this.createPokemonImage(data);
-    if (!pokemonCard || !pokemonImage || !pokemonContainer) {
+    const pokemonType = this.createPokemonType(data);
+    if (!pokemonCard || !pokemonImage || !pokemonContainer || !pokemonType) {
       console.error('Failed to create Pokemon card, image or div');
       return;
     }
     pokemonCard.appendChild(pokemonImage);
+    pokemonCard.appendChild(pokemonType);
     pokemonContainer.appendChild(pokemonCard);
   }
 
@@ -98,10 +230,12 @@ export class LandingPageComponent implements OnInit {
     const pokemonCard = document.createElement('div');
     const ID = 'ID' + data.id;
     pokemonCard.classList.add(data.types[0].type.name);
+    pokemonCard.classList.add('pokemonCard');
     pokemonCard.id = 'Nr' + data.id;
     pokemonCard.addEventListener('click', () => {
       this.showPokemonDetails(ID);
     });
+    this.addHoverEffect(pokemonCard);
     return pokemonCard;
   }
 
@@ -115,6 +249,33 @@ export class LandingPageComponent implements OnInit {
     }
     pokemonImage.alt = data.name;
     return pokemonImage;
+  }
+
+  createPokemonType(data: Pokedex.Pokemon) {
+    const pokemonType = document.createElement('p');
+    pokemonType.innerHTML =
+      '#' + data.id + ' ' + data.name + '<br>' + data.types[0].type.name;
+    return pokemonType;
+  }
+
+  addHoverEffect(pokemonCard: any) {
+    pokemonCard.addEventListener('mousemove', (e: any) => {
+      const rect = pokemonCard.getBoundingClientRect();
+      const cx = e.clientX - rect.left;
+      const cy = e.clientY - rect.top;
+      const bx = pokemonCard.offsetWidth;
+      const by = pokemonCard.offsetHeight;
+      const angleX = (cx / bx) * 2 - 1;
+      const angleY = ((cy / by) * 2 - 1) * -1;
+      pokemonCard.style.setProperty('--angle-x', `${angleX}`);
+      pokemonCard.style.setProperty('--angle-y', `${angleY}`);
+    });
+    pokemonCard.addEventListener('mouseleave', () => {
+      const angleX = 0;
+      const angleY = 0;
+      pokemonCard.style.setProperty('--angle-x', `${angleX}`);
+      pokemonCard.style.setProperty('--angle-y', `${angleY}`);
+    });
   }
 
   renderPokemonDetails(data: Pokedex.Pokemon) {
@@ -184,13 +345,14 @@ export class LandingPageComponent implements OnInit {
     statsData: { label: string; value: number }[],
     data: Pokedex.Pokemon
   ) {
+    Chart.defaults.font.size = 10;
     const chart = new Chart(canvas, {
       type: 'bar',
       data: {
         labels: statsData.map((item) => item.label),
         datasets: [
           {
-            label: '#' + data.name,
+            label: '#' + data.id + ' ' + data.name,
             data: statsData.map((item) => item.value),
             backgroundColor: [
               'rgb(139, 0, 0)',
@@ -217,22 +379,10 @@ export class LandingPageComponent implements OnInit {
     return chart;
   }
 
-  showPokemonDetails(ID: string) {
-    const detailsContainer = document.getElementById(ID);
-    const pokemonDetailsContainer = document.getElementById(
-      'pokemonDetailsContainer'
-    );
-    if (!detailsContainer || !pokemonDetailsContainer) {
-      console.error('Container not found');
-      return;
-    }
-    pokemonDetailsContainer.classList.add('show');
-    detailsContainer.classList.add('show');
-  }
-
   addTypeClassesForDetails(data: Pokedex.Pokemon) {
     const typeClasses: { [key: string]: string } = {
       normal: 'normalD',
+      fairy: 'fairyD',
       fire: 'fireD',
       water: 'waterD',
       electric: 'electricD',
@@ -250,5 +400,18 @@ export class LandingPageComponent implements OnInit {
 
     const type = data.types[0].type.name;
     return typeClasses[type] || 'dragonD';
+  }
+
+  showPokemonDetails(ID: string) {
+    const detailsContainer = document.getElementById(ID);
+    const pokemonDetailsContainer = document.getElementById(
+      'pokemonDetailsContainer'
+    );
+    if (!detailsContainer || !pokemonDetailsContainer) {
+      console.error('Container not found');
+      return;
+    }
+    pokemonDetailsContainer.classList.add('show');
+    detailsContainer.classList.add('show');
   }
 }
