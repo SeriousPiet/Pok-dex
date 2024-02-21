@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, EventEmitter } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import Pokedex from 'pokedex-promise-v2';
@@ -8,25 +8,7 @@ import Pokedex from 'pokedex-promise-v2';
   standalone: true,
   imports: [CommonModule, NavBarComponent],
   styleUrls: ['./landing-page.component.scss'],
-
-  template: ` <section>
-    <app-nav-bar (closeButtonClicked)="closePokemonDetails()"></app-nav-bar>
-    <div style="display: flex; width: 100%">
-      <div id="cardFilter"></div>
-      <div id="pokemonContainer"></div>
-    </div>
-    <div id="pokemonDetailsContainer"></div>
-    <div id="mobileScreen">
-      <div>
-        <img id="rotateDeviceImage" src="../assets/img/rotate_device.gif" />
-      </div>
-      <div>
-        <p style="color: white;">
-          Um den Pokedex nutzen zu können, bitte das Gerät drehen.
-        </p>
-      </div>
-    </div>
-  </section>`,
+  templateUrl: './landing-page.component.html',
 })
 export class LandingPageComponent implements OnInit {
   currentPokemonDetailsId: string | null = null;
@@ -199,7 +181,7 @@ export class LandingPageComponent implements OnInit {
     if (!pokemonContainer) {
       return;
     }
-    const pokemonCards = pokemonContainer.getElementsByClassName('pokemonCard');
+    const pokemonCards = pokemonContainer.querySelectorAll('.pokemonCard, .mobilePokemonCard');
     for (let i = 0; i < pokemonCards.length; i++) {
       const pokemonCard = pokemonCards[i] as HTMLDivElement;
       const pokemonType = pokemonCard.classList[0];
@@ -468,7 +450,6 @@ export class LandingPageComponent implements OnInit {
 
   closePokemonDetails() {
     if (!this.currentPokemonDetailsId) return;
-    console.log(this.currentPokemonDetailsId);
     const detailsContainer = document.getElementById(this.currentPokemonDetailsId);
     const showCloseButton = document.getElementById('closeButton');
     const pokemonDetailsContainer = document.getElementById(
