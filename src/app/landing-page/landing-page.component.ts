@@ -1,18 +1,16 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
-import { FooterComponent } from './footer/footer.component';
 import Pokedex from 'pokedex-promise-v2';
-import Chart from 'chart.js/auto';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [CommonModule, NavBarComponent, FooterComponent],
+  imports: [CommonModule, NavBarComponent],
   styleUrls: ['./landing-page.component.scss'],
 
   template: ` <section>
-    <app-nav-bar></app-nav-bar>
+    <app-nav-bar (closeButtonClicked)="closePokemonDetails()"></app-nav-bar>
     <div style="display: flex; width: 100%">
       <div id="cardFilter"></div>
       <div id="pokemonContainer"></div>
@@ -28,10 +26,11 @@ import Chart from 'chart.js/auto';
         </p>
       </div>
     </div>
-    <app-footer></app-footer>
   </section>`,
 })
 export class LandingPageComponent implements OnInit {
+  currentPokemonDetailsId: string | null = null;
+
   constructor() {
     this.setFilter = this.setFilter.bind(this);
   }
@@ -41,6 +40,16 @@ export class LandingPageComponent implements OnInit {
     this.checkForBrowserSystem(isLandscape);
     this.renderPokemonTypeFilter();
     await this.getData();
+    if (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      )
+    ) {
+      document.querySelectorAll('.pokemonCard').forEach((card) => {
+        card.classList.add('mobilePokemonCard');
+        card.classList.remove('pokemonCard');
+      });
+    }
   }
 
   @HostListener('window:orientationchange')
@@ -172,9 +181,10 @@ export class LandingPageComponent implements OnInit {
     );
     const selectedType = checkedCheckboxes.map((checkbox) => checkbox.value);
     if (checkedCheckboxes.length === 0 || selectedType[0] === 'all') {
-      const allCheckbox = document.querySelector<HTMLInputElement>('input[value="all"]');
+      const allCheckbox =
+        document.querySelector<HTMLInputElement>('input[value="all"]');
       if (allCheckbox) {
-          allCheckbox.checked = true;
+        allCheckbox.checked = true;
       }
       this.loadCardFilter('all');
     } else {
@@ -302,81 +312,107 @@ export class LandingPageComponent implements OnInit {
     const detailsContainer = document.createElement('div');
     detailsContainer.id = 'ID' + data.id;
     detailsContainer.classList.add('pokemonDetails');
+    const elementsContainer = this.createElementsContainer(data);
+    detailsContainer.appendChild(elementsContainer);
     const shadow = this.addTypeClassesForDetails(data);
     if (typeof shadow === 'string') {
       detailsContainer.classList.add(shadow);
     }
-    detailsContainer.appendChild(this.pokemonIMG(data));
     const chart = this.pokemonDetails(data);
-    if (!chart) {
-      return detailsContainer;
+    if (chart) {
+      detailsContainer.appendChild(chart);
     }
-    detailsContainer.appendChild(chart);
     return detailsContainer;
+  }
+  
+  createElementsContainer(data: Pokedex.Pokemon): HTMLElement {
+    const elementsContainer = document.createElement('div');
+    elementsContainer.classList.add('elementContainer');
+    elementsContainer.appendChild(this.createPrevButton(data));
+    elementsContainer.appendChild(this.pokemonIMG(data));
+    elementsContainer.appendChild(this.createNextButton(data));
+    return elementsContainer;
+  }
+  
+  createPrevButton(data: Pokedex.Pokemon): HTMLButtonElement {
+    const prevButton = document.createElement('button');
+    prevButton.id = 'prev' + data.id;
+    prevButton.classList.add('prevButton');
+    prevButton.addEventListener('click', () => {
+      this.navigatePokemon(-1, data.id);
+    });
+    return prevButton;
+  }
+  
+  createNextButton(data: Pokedex.Pokemon): HTMLButtonElement {
+    const nextButton = document.createElement('button');
+    nextButton.id = 'next' + data.id;
+    nextButton.classList.add('nextButton');
+    nextButton.addEventListener('click', () => {
+      this.navigatePokemon(1, data.id);
+    });
+    return nextButton;
   }
 
   pokemonDetails(data: Pokedex.Pokemon) {
-    const statsList = document.createElement('ul');
-    data.stats.forEach((stat) => {
-      const statItem = document.createElement('li');
-      statItem.textContent = `${stat.stat.name}: ${stat.base_stat}`;
-      statsList.appendChild(statItem);
-    });
-    const canvas = document.createElement('canvas');
+    const statsChartContainer = document.createElement('div');
     const canvasText = document.createElement('p');
-    const ID = 'canvasID' + data.id;
-    canvas.id = ID;
+    statsChartContainer.classList.add('chart');
     canvasText.textContent = data.name;
-    canvas.appendChild(canvasText);
-    if (!canvas) {
-      console.error('Canvas not found');
+    statsChartContainer.appendChild(canvasText);
+    if (!statsChartContainer) {
+      console.error('statsChart not found');
       return;
     }
     const statsData: { label: string; value: number }[] = [];
     data.stats.forEach((stat) => {
       statsData.push({ label: stat.stat.name, value: stat.base_stat });
     });
-    this.generateChart(canvas, statsData, data);
-    return canvas;
+    this.generateChart(statsChartContainer, statsData);
+    return statsChartContainer;
   }
 
   generateChart(
-    canvas: any,
-    statsData: { label: string; value: number }[],
-    data: Pokedex.Pokemon
+    statsChartContainer: HTMLElement,
+    statsData: { label: string; value: number }[]
   ) {
-    Chart.defaults.font.size = 10;
-    const chart = new Chart(canvas, {
-      type: 'bar',
-      data: {
-        labels: statsData.map((item) => item.label),
-        datasets: [
-          {
-            label: '#' + data.id + ' ' + data.name,
-            data: statsData.map((item) => item.value),
-            backgroundColor: [
-              'rgb(139, 0, 0)',
-              'rgb(255, 69, 0)',
-              'rgb(0, 100, 0)',
-              'rgb(255, 0, 255)',
-              'rgb(173, 216, 230)',
-              'rgb(255, 255, 102)',
-            ],
-            borderColor: 'rgb(255, 255, 255)',
-            borderWidth: 1,
-            clip: { left: 5, top: 5, right: -2, bottom: 0 },
-          },
-        ],
-      },
-      options: {
-        animation: false,
-        indexAxis: 'y',
-        layout: {
-          padding: 20,
-        },
-      },
+    statsData.forEach((stat) => {
+      const statsContainer = document.createElement('div');
+      statsContainer.classList.add('statsContainer');
+      const parentStatsDiv = document.createElement('div');
+      const statsInfo = this.generateStatsInfo(stat);
+      const bar = this.generateBar(stat);
+      parentStatsDiv.classList.add('parentStatsDiv');
+      parentStatsDiv.appendChild(statsInfo);
+      parentStatsDiv.appendChild(bar);
+      statsContainer.appendChild(parentStatsDiv);
+      statsChartContainer.appendChild(statsContainer);
     });
-    return chart;
+
+    return statsChartContainer;
+  }
+
+  generateStatsInfo(stat: { label: string; value: number }) {
+    const parentSpan = document.createElement('span');
+    const labelSpan = document.createElement('span');
+    const valueSpan = document.createElement('span');
+    labelSpan.textContent = stat.label;
+    valueSpan.textContent = stat.value.toString();
+    parentSpan.appendChild(labelSpan);
+    parentSpan.appendChild(valueSpan);
+    parentSpan.classList.add('statsInfo');
+    return parentSpan;
+  }
+
+  generateBar(stat: { label: string; value: number }) {
+    const parentBarDiv = document.createElement('div');
+    const childBarDiv = document.createElement('div');
+    const widthInProzent = (100 / 200) * stat.value;
+    parentBarDiv.classList.add('parentBarDiv');
+    childBarDiv.classList.add('childBarDiv');
+    childBarDiv.style.width = widthInProzent.toString() + '%';
+    parentBarDiv.appendChild(childBarDiv);
+    return parentBarDiv;
   }
 
   addTypeClassesForDetails(data: Pokedex.Pokemon) {
@@ -397,21 +433,52 @@ export class LandingPageComponent implements OnInit {
       psychic: 'psychicD',
       ghost: 'ghostD',
     };
-
     const type = data.types[0].type.name;
     return typeClasses[type] || 'dragonD';
   }
 
   showPokemonDetails(ID: string) {
     const detailsContainer = document.getElementById(ID);
+    const showCloseButton = document.getElementById('closeButton');
     const pokemonDetailsContainer = document.getElementById(
       'pokemonDetailsContainer'
     );
     if (!detailsContainer || !pokemonDetailsContainer) {
-      console.error('Container not found');
+      console.error('Container or buttons not found');
       return;
     }
     pokemonDetailsContainer.classList.add('show');
     detailsContainer.classList.add('show');
+    this.currentPokemonDetailsId = ID;
+    showCloseButton?.classList.add('show');
+  }
+
+  navigatePokemon(offset: number, currentPokemonId: number) {
+    const currentContainer = document.getElementById('ID' + currentPokemonId);
+    if (!currentContainer) return;
+    const nextPokemonId = currentPokemonId + offset;
+    const nextContainer = document.getElementById(
+      'ID' + nextPokemonId
+    ) as HTMLElement;
+    if (!nextContainer) return;
+    currentContainer.classList.remove('show');
+    nextContainer.classList.add('show');
+  }
+
+  closePokemonDetails() {
+    if (!this.currentPokemonDetailsId) return;
+    const detailsContainer = document.getElementById(this.currentPokemonDetailsId);
+    const showCloseButton = document.getElementById('closeButton');
+    const pokemonDetailsContainer = document.getElementById(
+      'pokemonDetailsContainer'
+    );
+    if (!detailsContainer || !pokemonDetailsContainer) {
+      console.error('Container or buttons not found');
+      return;
+    }
+    pokemonDetailsContainer.classList.remove('show');
+    showCloseButton?.classList.remove('show');
+    detailsContainer.classList.remove('show');
+    this.currentPokemonDetailsId = null;
   }
 }

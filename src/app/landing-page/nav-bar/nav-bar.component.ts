@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-nav-bar',
@@ -8,5 +8,9 @@ import { Component } from '@angular/core';
   styleUrl: './nav-bar.component.scss'
 })
 export class NavBarComponent {
+  @Output() closeButtonClicked = new EventEmitter<void>();
 
+  onButtonClick() {
+    this.closeButtonClicked.emit();
+  }
 }
