@@ -463,10 +463,12 @@ export class LandingPageComponent implements OnInit {
     if (!nextContainer) return;
     currentContainer.classList.remove('show');
     nextContainer.classList.add('show');
+    this.currentPokemonDetailsId = 'ID' + nextPokemonId;
   }
 
   closePokemonDetails() {
     if (!this.currentPokemonDetailsId) return;
+    console.log(this.currentPokemonDetailsId);
     const detailsContainer = document.getElementById(this.currentPokemonDetailsId);
     const showCloseButton = document.getElementById('closeButton');
     const pokemonDetailsContainer = document.getElementById(
