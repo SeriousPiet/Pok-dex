@@ -42,6 +42,9 @@ section {
     gap: 10px;
     color: white;
   }
+  label:hover {
+    cursor: pointer;
+  }
   input[type="checkbox"] {
     margin-left: 10px;
   }
