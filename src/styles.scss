@@ -10,10 +10,10 @@
   src: url("./app/fonts/Poppins-Regular.ttf");
 }
 
-@mixin containerStyle($display: flex) {
-  display: $display;
-  justify-content: center;
-  align-items: center;
+@mixin containerStyle($D-flex: flex, $JC-center: center, $AI-center: center) {
+  display: $D-flex;
+  justify-content: $JC-center;
+  align-items: $AI-center;
 }
 
 section {
@@ -24,6 +24,46 @@ section {
   min-height: 100vh;
   width: 100%;
   margin-top: 100px;
+}
+
+.nav {
+  @include containerStyle(flex, space-evenly);
+  flex-direction: column;
+  position: fixed;
+  z-index: 2;
+  top: 0px;
+  left: 0px;
+  height: 100px;
+  width: 100%;
+  background-color: #1f1f1f;
+  p {
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
+  }
+  img {
+    display: none;
+    width: 30px;
+    height: 30px;
+  }
+  img:hover {
+    cursor: pointer;
+  }
+}
+
+.subNav {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.searchForm {
+  @include containerStyle();
+  flex-wrap: wrap;
+  gap: 10px;
+  color: white;
 }
 
 #cardFilter {
@@ -51,7 +91,7 @@ section {
 }
 
 #pokemonContainer {
-  @include containerStyle();
+  @include containerStyle(flex, center, flex-start);
   flex-wrap: wrap;
   position: relative;
   gap: 10px;
@@ -112,8 +152,7 @@ section {
     text-align: center;
     color: white;
   }
-  &:active,
-  &:focus {
+  &:active {
     transform: scale(1.3);
     p {
       color: black;
@@ -178,11 +217,11 @@ section {
 }
 
 .prevButton {
-  background-image: url('../src/assets/img/arrow-left.png');
+  background-image: url("../src/assets/img/arrow-left.png");
 }
 
 .nextButton {
-  background-image: url('../src/assets/img/arrow-right.png');
+  background-image: url("../src/assets/img/arrow-right.png");
 }
 
 .chart {
@@ -237,9 +276,7 @@ section {
 }
 
 #mobileScreen {
-  display: none;
-  align-items: center;
-  justify-content: center;
+  @include containerStyle(none);
   flex-direction: column;
   position: fixed;
   top: 0;
@@ -248,6 +285,26 @@ section {
   width: 100%;
   background-color: black;
   z-index: 3;
+}
+
+.footer {
+  @include containerStyle();
+  height: 100px;
+  span {
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
+  }
+  a {
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  a:hover {
+    cursor: pointer;
+    color: #fbc418;
+  }
 }
 
 .show {
@@ -559,7 +616,6 @@ section {
 }
 
 @media screen and (max-width: 936px) {
-
   .mobileHover {
     transition: transform 0.5s;
     &:active,
@@ -580,7 +636,6 @@ section {
 }
 
 @media screen and (max-width: 715px) {
-
   .parentStatsDiv {
     display: flex;
     flex-direction: column;
@@ -596,25 +651,22 @@ section {
     padding: unset;
     width: 100%;
   }
-  
+
   .parentBarDiv {
     padding: unset;
     width: 100%;
     align-items: center;
   }
-
 }
 
 @media screen and (max-width: 350px) {
-
-.pokemonDetails {
-  min-width: 100%;
-}
-
+  .pokemonDetails {
+    min-width: 100%;
+  }
 }
 
 @media screen and (max-height: 760px) {
-#pokemonDetailsContainer {
-  justify-content: flex-end;
-}
+  #pokemonDetailsContainer {
+    justify-content: flex-end;
+  }
 }

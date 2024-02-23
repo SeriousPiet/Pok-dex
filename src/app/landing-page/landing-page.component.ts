@@ -1,17 +1,20 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavBarComponent } from './nav-bar/nav-bar.component';
+import { FormsModule } from '@angular/forms';
 import Pokedex from 'pokedex-promise-v2';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [CommonModule, NavBarComponent],
+  imports: [CommonModule, FormsModule],
   styleUrls: ['./landing-page.component.scss'],
   templateUrl: './landing-page.component.html',
 })
 export class LandingPageComponent implements OnInit {
   currentPokemonDetailsId: string | null = null;
+  searchedPokemon: Pokedex.Pokemon[] = [];
+  pokemonDataList: Pokedex.Pokemon[] = [];
+  searchQuery: string = '';
 
   constructor() {
     this.setFilter = this.setFilter.bind(this);
@@ -65,14 +68,67 @@ export class LandingPageComponent implements OnInit {
       for (let i = 1; i <= 151; i++) {
         promises.push(pokedex.getPokemonByName(i));
       }
-      const pokemonDataList = await Promise.all(promises);
-      pokemonDataList.forEach((data) => {
+      this.pokemonDataList = await Promise.all(promises);
+      this.pokemonDataList.forEach((data) => {
         this.renderPokemonData(data);
         this.renderPokemonDetails(data);
       });
-    } catch (error) {
-      console.error(error);
+    } catch (error) {}
+  }
+
+  @HostListener('window:load')
+  onWindowLoad() {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        if (this.searchQuery.length >= 3) {
+          this.searchPokemon();
+        }
+      });
     }
+  }
+
+  searchPokemon() {
+    if (!this.searchQuery) {
+      this.searchedPokemon = [];
+      this.foundPokemon([]);
+      return;
+    }
+    const searchQueryLowerCase = this.searchQuery.toLowerCase();
+    this.searchedPokemon = this.pokemonDataList.filter(
+      (pokemon) =>
+        pokemon.name.toLowerCase().includes(searchQueryLowerCase) ||
+        pokemon.id.toString().includes(searchQueryLowerCase)
+    );
+    const foundPokemonIDs = this.searchedPokemon.map(
+      (pokemon) => 'Nr' + pokemon.id
+    );
+    this.foundPokemon(foundPokemonIDs);
+  }
+
+  foundPokemon(foundPokemonIDs: string[]) {
+    const pokemonContainer = document.getElementById('pokemonContainer');
+    if (!pokemonContainer) {
+      return;
+    }
+    const pokemonCards = pokemonContainer.querySelectorAll(
+      '.pokemonCard, .mobilePokemonCard'
+    );
+    pokemonCards.forEach((pokemonCard) => {
+      const pokemonID = pokemonCard.id;
+      if (foundPokemonIDs.includes(pokemonID)) {
+        (pokemonCard as HTMLDivElement).style.display = 'flex';
+      } else {
+        (pokemonCard as HTMLDivElement).style.display = 'none';
+      }
+    });
+
+    const checkboxes = document.querySelectorAll<HTMLInputElement>(
+      '#cardFilter input[type="checkbox"]'
+    );
+    checkboxes.forEach((cb) => {
+      cb.checked = false;
+    });
   }
 
   renderPokemonTypeFilter() {
@@ -181,7 +237,9 @@ export class LandingPageComponent implements OnInit {
     if (!pokemonContainer) {
       return;
     }
-    const pokemonCards = pokemonContainer.querySelectorAll('.pokemonCard, .mobilePokemonCard');
+    const pokemonCards = pokemonContainer.querySelectorAll(
+      '.pokemonCard, .mobilePokemonCard'
+    );
     for (let i = 0; i < pokemonCards.length; i++) {
       const pokemonCard = pokemonCards[i] as HTMLDivElement;
       const pokemonType = pokemonCard.classList[0];
@@ -224,7 +282,8 @@ export class LandingPageComponent implements OnInit {
     pokemonCard.classList.add(data.types[0].type.name);
     pokemonCard.classList.add('pokemonCard');
     pokemonCard.id = 'Nr' + data.id;
-    pokemonCard.addEventListener('click', () => {
+    pokemonCard.addEventListener('click', (event) => {
+      event.preventDefault();
       this.showPokemonDetails(ID);
     });
     this.addHoverEffect(pokemonCard);
@@ -306,7 +365,7 @@ export class LandingPageComponent implements OnInit {
     }
     return detailsContainer;
   }
-  
+
   createElementsContainer(data: Pokedex.Pokemon): HTMLElement {
     const elementsContainer = document.createElement('div');
     elementsContainer.classList.add('elementContainer');
@@ -315,7 +374,7 @@ export class LandingPageComponent implements OnInit {
     elementsContainer.appendChild(this.createNextButton(data));
     return elementsContainer;
   }
-  
+
   createPrevButton(data: Pokedex.Pokemon): HTMLButtonElement {
     const prevButton = document.createElement('button');
     prevButton.id = 'prev' + data.id;
@@ -325,7 +384,7 @@ export class LandingPageComponent implements OnInit {
     });
     return prevButton;
   }
-  
+
   createNextButton(data: Pokedex.Pokemon): HTMLButtonElement {
     const nextButton = document.createElement('button');
     nextButton.id = 'next' + data.id;
@@ -450,7 +509,9 @@ export class LandingPageComponent implements OnInit {
 
   closePokemonDetails() {
     if (!this.currentPokemonDetailsId) return;
-    const detailsContainer = document.getElementById(this.currentPokemonDetailsId);
+    const detailsContainer = document.getElementById(
+      this.currentPokemonDetailsId
+    );
     const showCloseButton = document.getElementById('closeButton');
     const pokemonDetailsContainer = document.getElementById(
       'pokemonDetailsContainer'
