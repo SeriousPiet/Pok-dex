@@ -16,12 +16,18 @@
   align-items: $AI-center;
 }
 
+.wrapContainer {
+  @include containerStyle();
+  background-color: #1f1f1f;
+  width: 100%;
+}
+
 section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #1f1f1f;
   min-height: 100vh;
+  max-width: 1240px;
   width: 100%;
   margin-top: 100px;
 }
